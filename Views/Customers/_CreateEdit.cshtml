@@ -1,0 +1,49 @@
+﻿@model Customer
+
+<!--Partial View-->
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<div class="d-flex justify-content-between ">
+    <h4>Customer</h4>
+
+
+    <input type="submit" value="Save" class="btn btn-primary" />
+
+
+</div>
+
+<hr />
+
+<div class="row my-4">
+    
+    <div class="form-group col-md-2 my-3">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group col-md-2  m-3">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group col-md-2 m-3">
+        <label asp-for="Age" class="control-label"></label>
+        <input asp-for="Age" class="form-control" />
+        <span asp-validation-for="Age" class="text-danger"></span>
+    </div>
+
+    <div class="form-group col-md-2 m-3">
+        <label asp-for="IsMale" class="control-label"></label>
+        <input asp-for="IsMale" class="form-control" />
+        <span asp-validation-for="IsMale" class="text-danger"></span>
+    </div>
+    <div class="form-group col-md-2  m-3">
+        <label asp-for="Remark" class="control-label"></label>
+        <input asp-for="Remark" class="form-control" />
+        <span asp-validation-for="Remark" class="text-danger"></span>
+    </div>
+    
+
+</div>
+

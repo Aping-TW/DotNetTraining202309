@@ -1,0 +1,49 @@
+﻿@model Components
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+<div class="d-flex justify-content-between">
+    <a asp-action="Index" class="btn btn-outline-danger">Back to List</a>
+    <h4>Components</h4>
+    <input type="submit" value="Create" class="btn btn-outline-success" />
+</div>
+
+<hr />
+
+<div>
+    <div class="form-group">
+        <label asp-for="WP" class="control-label"></label>
+        <input asp-for="WP" class="form-control" />
+        <span asp-validation-for="WP" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PartName" class="control-label"></label>
+        <input asp-for="PartName" class="form-control" />
+        <span asp-validation-for="PartName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Quantity" class="control-label"></label>
+        <input asp-for="Quantity" class="form-control" />
+        <span asp-validation-for="Quantity" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="SurfaceFinishing" class="control-label"></label>
+        <input asp-for="SurfaceFinishing" class="form-control" />
+        <span asp-validation-for="SurfaceFinishing" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row my-4">
+    <div class="form-group col-sm-2 col-md-4 col-lg-6">
+        <label asp-for="ReceiveDate" class="control-label"></label>
+        <input type="date" asp-for="ReceiveDate" class="form-control" />
+        <span asp-validation-for="ReceiveDate" class="text-danger"></span>
+    </div>
+    <div class="form-group col-sm-2 col-md-4 col-lg-6">
+        <label asp-for="DeliveryDate" class="control-label"></label>
+        <input type="date" asp-for="DeliveryDate" class="form-control" />
+        <span asp-validation-for="DeliveryDate" class="text-danger"></span>
+    </div>
+</div>

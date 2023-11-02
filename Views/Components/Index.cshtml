@@ -1,0 +1,89 @@
+﻿@model X.PagedList.IPagedList<WebApplication1.Models.Components>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<div class="d-flex justify-content-between">
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    
+        <div class="d-flex justify-content-end">
+        @*  用Form的方式搜尋
+            <form method="get" asp-action="Index" class="col-10">
+                <input name="search" type="text" class="form-control" value="@ViewBag.Search"  placeholder="搜尋..." />
+                <button type="submit" class="btn btn-outline-primary col-4">搜尋</button>
+            <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#searchModal">進階搜尋</a>
+                
+            </form>
+            <form method="get" asp-action="Index" >
+                <button type="submit" class="btn btn-outline-primary">清除</button>
+            </form>
+        *@
+
+        @* ajax *@
+
+        <input id="searchInput" name="search" type="text" class="form-control" value="@ViewBag.Search" placeholder="搜尋..." />
+        <button onclick="Search()" class="btn btn-outline-primary">搜尋</button>
+        <button onclick="Clear()" class="btn btn-outline-primary">清除</button>
+
+        </div>
+   
+</div>
+
+@* <div id="IndexContent"></div> *@
+<partial name ="IndexContent" />
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+new PagedListRenderOptions { LinkToFirstPageFormat = "首頁", LinkToNextPageFormat = "下一頁", LinkToPreviousPageFormat = "上一頁", LinkToLastPageFormat = "末頁",
+MaximumPageNumbersToDisplay = 5, DisplayItemSliceAndTotal = false })
+
+<!-- Modal -->
+<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchModalLabel">Modal title</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 將程式從layout的@RenderBody()延遲執行到@await RenderSectionAsync才開始執行 -->
+@section Scripts{
+    <script>
+        $(function () {
+            Search();
+            Clear()
+        })
+
+        function Search() {
+            var input = $("#searchInput").val();
+            $("#IndexContent").load('@Url.Action("IndexContent", "Components")', 
+            {
+                search: input
+            }
+            )               
+            }
+
+        function Clear() {
+            $("#searchInput").val('');
+            Search();
+        }
+    </script>
+}

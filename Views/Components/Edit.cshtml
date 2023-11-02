@@ -1,0 +1,22 @@
+﻿@model WebApplication1.Models.Components
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+
+
+<div>
+    <form asp-action="Edit">
+        <partial name="_CreatEdit" />
+    </form>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
