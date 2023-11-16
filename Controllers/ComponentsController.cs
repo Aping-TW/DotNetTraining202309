@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 using WebApplication1.Data;
 using WebApplication1.Models;
 using X.PagedList;
@@ -24,16 +26,24 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Components PageList
-        public async Task<IActionResult> Index(string? search = null, int page = 1, int pageSize = 2)
+        public async Task<IActionResult> Index(string? search = null, int page = 1, int pageSize = 3)
         {
             var result = (await _db.Components.AsNoTracking().ToPagedListAsync(page, pageSize));
 
             return View(result);
         }
 
-        public async Task<IActionResult> IndexContent(string? search = null)
+        public async Task<IActionResult> IndexContent(string? search = null, int? wpSearch = 0)
         {
+
+            #region 找出符合篩選條件的資料
             var result = _db.Components.AsQueryable();
+
+            if (wpSearch.HasValue)
+            {
+                result = result.Where(p => p.WP == wpSearch.Value);
+                ViewBag.Search = wpSearch;
+            }
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -41,7 +51,21 @@ namespace WebApplication1.Controllers
                 ViewBag.Search = search;
             }
 
+            
+
+            #endregion
+
+            //#region 將資料轉為 PagedList 的資料
+
+            //var pageNumber = page;// 若無傳入 Page，預設查詢第1頁
+            //var onePageOfMembers = result.ToPagedList(pageNumber, 4); // 參數說明: ToPagedList( 第幾頁 , 一頁要顯示多少資料 )
+
+            //#endregion
+
             return PartialView(result);
+
+
+
         }
 
         // GET: Components/Details/5
@@ -176,5 +200,35 @@ namespace WebApplication1.Controllers
         {
             return (_db.Components?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> PagedPartial(Components searchFilter, int? page, bool v)
+        //{
+        //    #region 找出符合篩選條件的資料
+
+        //    var memberFilter = await _db.Components.Filters.MemberFilter();
+
+        //    if (v)
+        //        memberFilter.WP = searchFilter.WP;
+
+        //    if (!string.IsNullOrEmpty(searchFilter.PartName))
+        //        memberFilter.Email = searchFilter.PartName;
+
+        //    var members = _db.Search(memberFilter);
+        //    if (members == null)
+        //        members = new List<Components>();
+
+        //    #endregion
+
+        //    #region 將資料轉為 PagedList 的資料
+
+        //    var pageNumber = page ?? 1;// 若無傳入 Page，預設查詢第1頁
+        //    var onePageOfMembers = members.ToPagedList(pageNumber, 1); // 參數說明: ToPagedList( 第幾頁 , 一頁要顯示多少資料 )
+
+        //    #endregion
+
+        //    return PartialView("IndexContent", onePageOfMembers);
+        //}
+
     }
 }

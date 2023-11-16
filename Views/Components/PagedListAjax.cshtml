@@ -1,0 +1,22 @@
+﻿@model X.PagedList.IPagedList<WebApplication1.Models.Components>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+
+
+@{
+    
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+    new PagedListRenderOptions() {
+        LinkToFirstPageFormat = "首頁",
+        LinkToNextPageFormat = "下一頁",
+        LinkToPreviousPageFormat = "上一頁",
+        LinkToLastPageFormat = "末頁",
+        MaximumPageNumbersToDisplay = 5,
+        DisplayItemSliceAndTotal = false
+    },
+    new AjaxOptions() {
+        HttpMethod = "GET",
+        UpdateTargetId = "searchInput"
+    });
+}
+

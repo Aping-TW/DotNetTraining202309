@@ -8,11 +8,11 @@ namespace WebApplication1.Models
 
         public int WP { get; set; }
 
-        public string PartName { get; set; }
+        public string? PartName { get; set; }
 
         public int Quantity { get; set; }
 
-        public string SurfaceFinishing { get; set; }
+        public string? SurfaceFinishing { get; set; }
 
         public DateTimeOffset ReceiveDate { get; set; }
 

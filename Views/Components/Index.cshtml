@@ -27,63 +27,199 @@
         *@
 
         @* ajax *@
-
+@*     </div> *@
         <input id="searchInput" name="search" type="text" class="form-control" value="@ViewBag.Search" placeholder="搜尋..." />
-        <button onclick="Search()" class="btn btn-outline-primary">搜尋</button>
-        <button onclick="Clear()" class="btn btn-outline-primary">清除</button>
+            <div>
+                <button onclick="Search()" class="btn btn-outline-primary">搜尋</button>
+                <button onclick="Clear()" class="btn btn-outline-primary">清除</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#searchModal">
+                    進階搜尋
+                </button>
+            </div>
+        
+
+
+
+        @* <div>
+        <hr />
+
+        <div id="ItemComponents"> *@
 
         </div>
    
 </div>
 
-@* <div id="IndexContent"></div> *@
+<!--DataTable Ajax 插入位置-->
+<div id="IndexContent"></div>
 <partial name ="IndexContent" />
 
+
 @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
-new PagedListRenderOptions { LinkToFirstPageFormat = "首頁", LinkToNextPageFormat = "下一頁", LinkToPreviousPageFormat = "上一頁", LinkToLastPageFormat = "末頁",
-MaximumPageNumbersToDisplay = 5, DisplayItemSliceAndTotal = false })
+PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+      new PagedListRenderOptions()
+              {
+                  LinkToFirstPageFormat = "首頁",
+                  LinkToNextPageFormat = "下一頁",
+                  LinkToPreviousPageFormat = "上一頁",
+                  LinkToLastPageFormat = "末頁",
+                  MaximumPageNumbersToDisplay = 5,
+                  DisplayItemSliceAndTotal = false
+              },
+      new AjaxOptions()
+              {
+                  HttpMethod = "GET",
+                  UpdateTargetId = "IndexContent"
+              }
+              )
+              )
+
+
+
 
 <!-- Modal -->
-<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="searchModalLabel">Modal title</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+
+     <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="searchModalLabel">進階搜尋</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="WPSearch">WP</label>
+                    <input id="wpSearchInput" name="search" type="text" class="form-control" value="@ViewBag.Search" />
+                    <label for="partNameSearch">PartName</label>
+                    <input id="partNameSearchInput" name="search" type="text" class="form-control" value="@ViewBag.Search" />
+                </div>
+                <div class="modal-footer">
+                    <button onclick="SearchAdvanced()" class="btn btn-outline-primary">搜尋</button>
+                    <button onclick="ClearAdvanced()" class="btn btn-outline-primary">清除</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- 將程式從layout的@RenderBody()延遲執行到@await RenderSectionAsync才開始執行 -->
-@section Scripts{
-    <script>
-        $(function () {
-            Search();
-            Clear()
-        })
+        
+    
+    
 
-        function Search() {
-            var input = $("#searchInput").val();
-            $("#IndexContent").load('@Url.Action("IndexContent", "Components")', 
-            {
-                search: input
+            <!-- 將程式從layout的@RenderBody()延遲執行到@await RenderSectionAsync才開始執行 -->
+            @section Scripts{
+                <script>
+
+                    // AJAX(未加入PagedList)
+                    // $.ajax(function () {
+                    //     Search();
+                    //     Clear()
+                    // })
+
+                    // function Search() {
+                    //     var input = $("#searchInput").val();
+                    //     $("#IndexContent").load('@Url.Action("IndexContent", "Components")',
+                    //     {
+                    //         search: input
+                    //     }
+                    //     )
+                    //     }
+
+                    // function Clear() {
+                    //     $("#searchInput").val('');
+                    //     Search();
+                    // }
+
+                    
+
+                    function Search() {
+                        // var input = $("#searchInput").val();
+                        // performSearch("", input);
+
+                        // 若 hash 沒資料，預設取第 1 頁
+                        // hash = #，瀏覽器解讀為位置識別符號
+                        // # 是用來指導瀏覽器動作的，對伺服器端完全無用。所以，HTTP請求中不包括 #
+                        var page = window.location.hash
+                            ? window.location.hash.slice(1) : 1;
+
+                        // 取資料
+                        fetchPage(page);
+                    }
+
+                    
+
+                    function SearchAdvanced() {
+                        // var wpInput = $("#wpSearchInput").val();
+                        // var partNameInput = $("#partNameSearchInput").val();
+                        // performsearch(wpInput, partNameInput);
+
+                        // 若 hash 沒資料，預設取第 1 頁
+                        // hash = #，瀏覽器解讀為位置識別符號
+                        // # 是用來指導瀏覽器動作的，對伺服器端完全無用。所以，HTTP請求中不包括 #
+                        var page = window.location.hash
+                            ? window.location.hash.slice(1) : 1;
+                        // 取資料
+                        fetchPage(page);
+
+                    }
+
+
+                    function Clear() {
+                        $("#searchInput").val('');
+                        Search();
+                    }
+
+                    function ClearAdvanced() {
+                        $("#wpSearchInput").val('');
+                        $("#partNameSearchInput").val('');
+                        SearchAdvanced();
+                    }
+
+        
+
+                    var fetchPage = function (page) {
+                        // 準備搜尋條件資料
+                        var filter = {
+                            input: $("#searchInput").val(),
+                            wp: $("#wpSearchInput").val(),
+                            partName: $("#partNameSearchInput").val(),
+                            page: page,
+                        }
+
+                        // Ajax 呼叫
+                        $.ajax({
+                            url: '@Url.Action("IndexContent", "Components")',
+                            data: filter,
+                            type: 'GET',
+                            success: function (resultHtml) {
+                                // 取得資料後將目前 hash 重設
+                                window.location.hash = page;
+                                // 將 PartialView 資料寫入 div id="MemberDatas" 的區塊
+                            $('#IndexContent').html(resultHtml);
+                                // 重設頁碼按鈕
+                            $('#IndexContent .pagination li a').each(function (i, item) {
+                                    // 若是有超連結的頁碼
+                                    var hyperLinkUrl = $(item).attr('href');
+                                    if (typeof hyperLinkUrl !== 'undefined' && hyperLinkUrl !== false) {
+                                        // 取得當前按鈕(<a>)的對應頁碼
+                                        var pageNumber = $(item).attr('href');
+                                        // 將頁碼按鈕的 href 去除
+                                        $(item).attr('href', '#');
+                                        // 設定按下頁碼事件
+                                        $(item).click(function (event) {
+                                            // 停止事件的默認動作，例如有時候我們會利用連結的 <a> 來當作按鈕，
+                                            // 他本身 DOM 就擁有連結的功能，但是有時候我們會為他新增 onclick 的事件，
+                                            // 而只要在該 <a> 觸發的事件中加入event.preventDefault()，
+                                            // 就不會在執行他默認的動作，也就是不會再執行「連結到某個網址」這個動作。
+                                            event.preventDefault();
+                                            // 取得按下的頁碼的資料
+                                            fetchPage(pageNumber);
+                                            )
+                                        });
+                                    }
+                                });
+            
+
+                </script>
             }
-            )               
-            }
 
-        function Clear() {
-            $("#searchInput").val('');
-            Search();
-        }
-    </script>
-}
+
